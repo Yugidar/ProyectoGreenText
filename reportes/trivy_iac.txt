@@ -1,0 +1,23 @@
+2026-09-18T04:37:00Z	INFO	[misconfig] Misconfiguration scanning is enabled
+2026-09-18T04:37:00Z	INFO	[checks-client] Using existing checks from cache	path="/home/ec2-user/.cache/trivy/policy/content"
+2026-09-18T04:37:02Z	ERROR	[terraform parser] Error parsing file	module="root" file_path="foro_infra.tf" cause="cat > infra/foro_infra.tf <<'EOF'" err="foro_infra.tf:1,29-30: Invalid character; Single quotes are not valid. Use double quotes (\") to enclose strings."
+2026-09-18T04:37:02Z	ERROR	[terraform parser] Error parsing file	module="root" file_path="foro_infra.tf" cause="" err="foro_infra.tf:1,1-4: Argument or block definition required; An argument or block definition is required here. To set an argument, use the equals sign \"=\" to introduce the argument value."
+2026-09-18T04:37:02Z	ERROR	[terraform parser] Error parsing file	module="root" file_path="foro_infra.tf" cause="" err="foro_infra.tf:38,1-4: Argument or block definition required; An argument or block definition is required here. To set an argument, use the equals sign \"=\" to introduce the argument value."
+2026-09-18T04:37:02Z	INFO	[terraform scanner] Scanning root module	file_path="."
+2026-09-18T04:37:02Z	ERROR	[terraform parser] Error parsing file	module="root" file_path="foro_infra.tf" cause="cat > infra/foro_infra.tf <<'EOF'" err="foro_infra.tf:1,29-30: Invalid character; Single quotes are not valid. Use double quotes (\") to enclose strings."
+2026-09-18T04:37:02Z	ERROR	[terraform parser] Error parsing file	module="root" file_path="foro_infra.tf" cause="" err="foro_infra.tf:1,1-4: Argument or block definition required; An argument or block definition is required here. To set an argument, use the equals sign \"=\" to introduce the argument value."
+2026-09-18T04:37:02Z	ERROR	[terraform parser] Error parsing file	module="root" file_path="foro_infra.tf" cause="" err="foro_infra.tf:38,1-4: Argument or block definition required; An argument or block definition is required here. To set an argument, use the equals sign \"=\" to introduce the argument value."
+2026-09-18T04:37:02Z	INFO	[terraform parser] No files found, nothing to do.	module="root"
+2026-09-18T04:37:02Z	INFO	Detected config files	num=1
+
+Report Summary
+
+┌────────┬───────────┬───────────────────┐
+│ Target │   Type    │ Misconfigurations │
+├────────┼───────────┼───────────────────┤
+│ .      │ terraform │         0         │
+└────────┴───────────┴───────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+

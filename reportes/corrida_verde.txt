@@ -1,0 +1,9 @@
+=== INICIANDO PIPELINE DE SEGURIDAD ===
+[1] Revisando secretos en el codigo...
+  [OK] Cero secretos encontrados.
+[2] Revisando infraestructura (Terraform)...
+  [OK] Infraestructura segura.
+[3] Revisando dependencias de Python...
+  [OK] Dependencias limpias.
+=======================================
+VEREDICTO FINAL: PERMITIDO (Todos los controles en verde)

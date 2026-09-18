@@ -1,0 +1,9 @@
+
+    ○
+    │╲
+    │ ○
+    ○ ░
+    ░    gitleaks
+
+[90m4:37AM[0m [32mINF[0m scan completed in 6.43ms
+[90m4:37AM[0m [32mINF[0m no leaks found

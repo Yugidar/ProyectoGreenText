@@ -1,0 +1,9 @@
+=== INICIANDO PIPELINE DE SEGURIDAD ===
+[1] Revisando secretos en el codigo...
+  [X] UMBRAL SUPERADO: Se detectaron secretos (Bloquea > 0)
+[2] Revisando infraestructura (Terraform)...
+  [OK] Infraestructura segura.
+[3] Revisando dependencias de Python...
+  [OK] Dependencias limpias.
+=======================================
+VEREDICTO FINAL: BLOQUEADO (1 controles fallaron)

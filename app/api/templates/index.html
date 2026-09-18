@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foro Greentext</title>
+    <style>
+        body { 
+            background-color: #1a1a1a; 
+            color: #d1d1d1; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            border-bottom: 2px solid #2d2d2d;
+            padding-bottom: 20px;
+        }
+        h1 { 
+            color: #789922; /* Verde clasico 4chan */
+            font-family: monospace; 
+            font-size: 2.5em; 
+            margin: 0;
+        }
+        .form-container { 
+            background-color: #242424; 
+            padding: 25px; 
+            border-radius: 12px; 
+            border: 1px solid #333; 
+            max-width: 600px; 
+            margin: 0 auto 40px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4); 
+        }
+        textarea, input[type="file"] { 
+            width: 100%; 
+            margin-bottom: 15px; 
+            background: #1a1a1a; 
+            border: 1px solid #444; 
+            color: #fff; 
+            padding: 12px; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+        }
+        textarea:focus { outline: none; border-color: #789922; }
+        button { 
+            background-color: #789922; 
+            color: #fff; 
+            border: none; 
+            padding: 12px 24px; 
+            font-weight: bold; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%;
+            transition: background 0.2s; 
+        }
+        button:hover { background-color: #8db529; }
+        .posts-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            max-width: 700px; 
+            margin: 0 auto; 
+        }
+        .post { 
+            background-color: #242424; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid #333; 
+            display: flex; 
+            gap: 20px; 
+        }
+        .post img { 
+            max-width: 250px; 
+            border-radius: 8px; 
+            object-fit: cover;
+        }
+        .post-content { flex-grow: 1; }
+        .post-header { 
+            color: #888; 
+            font-size: 0.9em; 
+            margin-bottom: 12px; 
+        }
+        .greentext { 
+            color: #789922; 
+            font-family: monospace; 
+            white-space: pre-wrap; 
+            font-size: 1.1em; 
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>> Foro Greentext</h1>
+    </header>
+
+    <div class="form-container">
+        <form id="postForm">
+            <textarea id="texto" rows="4" placeholder="> ser yo...&#10;> entrar al foro..."></textarea>
+            <input type="file" id="imagen" accept="image/*">
+            <button type="submit">Publicar de forma anónima</button>
+        </form>
+    </div>
+
+    <div class="posts-container" id="postsContainer">
+        <!-- Aqui se inyectan los posts -->
+    </div>
+
+    <script>
+        async function cargarPosts() {
+            const res = await fetch('/posts');
+            const posts = await res.json();
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+            
+            // Invertir para ver los más nuevos arriba
+            posts.reverse().forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                postDiv.innerHTML = `
+                    ${post.imagen_url ? `<img src="${post.imagen_url}" alt="imagen">` : ''}
+                    <div class="post-content">
+                        <div class="post-header">Anonymous No.${post.id || Math.floor(Math.random()*1000000)}</div>
+                        <div class="greentext">${post.texto}</div>
+                    </div>
+                `;
+                container.appendChild(postDiv);
+            });
+        }
+
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('texto', document.getElementById('texto').value);
+            
+            const fileInput = document.getElementById('imagen');
+            if(fileInput.files.length > 0) {
+                formData.append('imagen', fileInput.files[0]);
+            }
+
+            // Cambiar color del boton mientras sube
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'Enviando...';
+            
+            await fetch('/post', { method: 'POST', body: formData });
+            
+            // Limpiar y recargar
+            e.target.reset();
+            btn.textContent = 'Publicar de forma anónima';
+            cargarPosts();
+        });
+
+        // Cargar al iniciar
+        cargarPosts();
+    </script>
+</body>
+</html>
+
