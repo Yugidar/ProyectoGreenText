@@ -3,7 +3,7 @@ echo "=== INICIANDO PIPELINE DE SEGURIDAD ==="
 FALLOS=0
 
 echo "[1] Revisando secretos en el codigo..."
-# AQUI ESTA LA MAGIA: Solo escanea la carpeta app/
+
 gitleaks detect --no-git --source ./app -v --redact > reportes/gitleaks.txt 2>&1
 if [ $? -ne 0 ]; then
     echo "  [X] UMBRAL SUPERADO: Se detectaron secretos (Bloquea > 0)"
