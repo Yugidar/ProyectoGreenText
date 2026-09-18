@@ -5,3 +5,10 @@ __pycache__/
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+# Archivos de sistema Linux
+.cache/
+.docker/
+.local/
+.ssh/
+.bash*
