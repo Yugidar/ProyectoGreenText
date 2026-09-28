@@ -7,3 +7,6 @@ Las advertencias señalaban paquetes como `awscli`, `cloud-init`, `selinux`, `rp
 
 **Acción Correctiva:**
 Para la Entrega Final, el pipeline fue reconfigurado para auditar exclusivamente el archivo `requirements.txt` del proyecto (`pip-audit -r app/requirements.txt`), aislando correctamente las dependencias de la aplicación (Flask, Boto3) de los paquetes del sistema operativo.
+
+**Actualización (Fase de Producción): Aceptación de Riesgo por SO**
+Durante el escaneo estricto, se detectaron 3 vulnerabilidades (PYSEC-2026-141 en urllib3, PYSEC-2026-2275 en requests, PYSEC-2026-2132 en click) cuyos parches requieren obligatoriamente Python >= 3.10. Dado que la AMI de Amazon Linux en la instancia EC2 opera con una versión anterior (3.9) y una actualización mayor del SO rompería dependencias de AWS, se procedió a actualizar las librerías a la versión máxima soportada (ej. urllib3==2.6.3, remediando 4 de 5 CVEs). Las 3 excepciones restantes se añadieron al pipeline como riesgo aceptado documentado.
