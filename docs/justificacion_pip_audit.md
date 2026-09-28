@@ -10,3 +10,6 @@ Para la Entrega Final, el pipeline fue reconfigurado para auditar exclusivamente
 
 **Actualización (Fase de Producción): Aceptación de Riesgo por SO**
 Durante el escaneo estricto, se detectaron 3 vulnerabilidades (PYSEC-2026-141 en urllib3, PYSEC-2026-2275 en requests, PYSEC-2026-2132 en click) cuyos parches requieren obligatoriamente Python >= 3.10. Dado que la AMI de Amazon Linux en la instancia EC2 opera con una versión anterior (3.9) y una actualización mayor del SO rompería dependencias de AWS, se procedió a actualizar las librerías a la versión máxima soportada (ej. urllib3==2.6.3, remediando 4 de 5 CVEs). Las 3 excepciones restantes se añadieron al pipeline como riesgo aceptado documentado.
+
+**Actualización: Aceptación de Riesgo por Conflicto con boto3**
+Al intentar actualizar `urllib3` a una versión sin vulnerabilidades (2.x), se detectó un conflicto de dependencias crítico: `boto3` (esencial para la conexión con AWS S3) no es compatible y rompe la instalación (`ResolutionImpossible`). Por lo tanto, se decidió por arquitectura permitir que `boto3` instale la versión de `urllib3` compatible (1.26.x) y añadir las 5 vulnerabilidades derivadas de esto (PYSEC-2026-141, 1999, 1998, 1994, 1996) a la lista de excepciones formales del pipeline, documentando el riesgo aceptado por limitación de dependencias del proveedor (AWS).
