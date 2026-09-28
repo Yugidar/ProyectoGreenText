@@ -5,5 +5,7 @@
   [OK] Infraestructura segura.
 [3] Revisando dependencias de Python...
   [OK] Dependencias limpias.
+[4] Analisis Estatico de Codigo (Semgrep)...
+  [OK] Codigo fuente seguro.
 =======================================
 VEREDICTO FINAL: PERMITIDO (Todos los controles en verde)
