@@ -3,7 +3,8 @@ import uuid
 import requests
 import pymysql
 import boto3
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -37,6 +38,15 @@ def inicializar_bd():
                     imagen_url VARCHAR(255)
                 )
             """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS comentarios (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    post_id INT NOT NULL,
+                    texto TEXT NOT NULL,
+                    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+                )
+            """)
         conexion.commit()
         conexion.close()
     except Exception as e:
@@ -54,7 +64,7 @@ def crear_post():
     if not texto_original:
         return jsonify({"error": "El texto es obligatorio"}), 400
 
-    # 1. Consultar al servicio moderador (la pieza distintiva de tu tema)
+    # 1. Consultar al servicio moderador 
     try:
         resp_mod = requests.post("http://moderador:5001/moderar", json={"texto": texto_original}, timeout=5)  # nosemgrep
         resultado = resp_mod.json()
@@ -92,32 +102,62 @@ def crear_post():
 @app.route('/posts', methods=['GET'])
 def listar_posts():
     conexion = obtener_conexion()
-    with conexion.cursor() as cursor:
-        cursor.execute("SELECT * FROM posts ORDER BY id DESC")
-        posts = cursor.fetchall()
-    conexion.close()
-    
-    bucket_name = os.environ.get('S3_BUCKET')
-    
-    for post in posts:
-        # Si el post tiene una imagen guardada
-        if post.get('imagen_url'):
-            # Extraemos el nombre exacto del archivo al final de la URL
-            nombre_archivo = post['imagen_url'].split('/')[-1] 
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT * FROM posts ORDER BY id DESC")
+            posts = cursor.fetchall()
             
-            # Generamos un enlace seguro que dura 1 hora
-            url_segura = s3_client.generate_presigned_url(
-                'get_object',
-                Params={'Bucket': bucket_name, 'Key': nombre_archivo},
-                ExpiresIn=3600
-            )
-            post['imagen_url'] = url_segura
+            bucket_name = os.environ.get('S3_BUCKET')
+            
+            for post in posts:
+                # Buscar comentarios de cada post
+                cursor.execute("SELECT texto FROM comentarios WHERE post_id = %s ORDER BY fecha ASC", (post['id'],))
+                post['comentarios'] = cursor.fetchall()
+                
+                # Generar URL segura de S3 si hay imagen
+                if post.get('imagen_url'):
+                    nombre_archivo = post['imagen_url'].split('/')[-1] 
+                    url_segura = s3_client.generate_presigned_url(
+                        'get_object',
+                        Params={'Bucket': bucket_name, 'Key': nombre_archivo},
+                        ExpiresIn=3600
+                    )
+                    post['imagen_url'] = url_segura
+    finally:
+        conexion.close()
             
     return jsonify(posts)
 
 @app.route('/')
 def home():
     return render_template('index.html')
+
+
+@app.route('/comentar/<int:post_id>', methods=['POST'])
+def comentar(post_id):
+    texto = request.form.get('comentario')
+    if not texto:
+        return redirect('/')
+        
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        texto_seguro = str(escape(texto))
+        cursor.execute(
+            "INSERT INTO comentarios (post_id, texto) VALUES (%s, %s)",
+            (post_id, texto_seguro) 
+        )
+    conexion.commit()
+    conexion.close()
+    return redirect('/')
+
+@app.route('/upvote/<int:post_id>', methods=['POST'])
+def upvote(post_id):
+    conexion = obtener_conexion()
+    with conexion.cursor() as cursor:
+        cursor.execute("UPDATE posts SET upvotes = COALESCE(upvotes, 0) + 1 WHERE id = %s", (post_id,))
+    conexion.commit()
+    conexion.close()
+    return jsonify({"status": "ok"})
 
 
 if __name__ == '__main__':
