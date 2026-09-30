@@ -21,15 +21,9 @@ else
 fi
 
 echo "[3] Revisando dependencias de Python..."
-# Se ignoran vulnerabilidades bloqueadas por conflictos de boto3 y version de Python
-pip-audit -r app/api/requirements.txt \
-  --ignore-vuln PYSEC-2026-141 \
-  --ignore-vuln PYSEC-2026-1999 \
-  --ignore-vuln PYSEC-2026-1998 \
-  --ignore-vuln PYSEC-2026-1994 \
-  --ignore-vuln PYSEC-2026-1996 \
-  --ignore-vuln PYSEC-2026-2275 \
-  --ignore-vuln PYSEC-2026-2132 > reportes/pip_audit.txt 2>&1
+
+pip-audit -r app/api/requirements.txt > reportes/pip_audit.txt 2>&1
+
 if [ $? -ne 0 ]; then
     echo "  [X] UMBRAL SUPERADO: Dependencia vulnerable encontrada"
     FALLOS=$((FALLOS+1))
