@@ -1,7 +1,7 @@
 [proyecto_greentext_documentaci_n.md](https://github.com/user-attachments/files/32842247/proyecto_greentext_documentaci_n.md)
-# ♻️ Proyecto GreenText - Foro de Reciclaje Interactivo
+# > Proyecto GreenText 
 
-Bienvenido al repositorio oficial del **Proyecto GreenText**, una aplicación web orientada a la comunidad de reciclaje. Este proyecto implementa un ecosistema DevSecOps completo, asegurando que cada línea de código, dependencia e infraestructura sea escaneada, validada y desplegada de manera segura en AWS.
+**Proyecto GreenText**, un foro desarrollado que se basa en los famosos greentext de 4chan, agregando votos positivos tipo "Upvotes" como en reddit y la capacidad de dejar comentarios todo desde el anonimato**
 
 ---
 
@@ -9,7 +9,7 @@ Bienvenido al repositorio oficial del **Proyecto GreenText**, una aplicación we
 
 El ciclo de vida del software en este proyecto está fuertemente protegido por un pipeline de CI/CD en Jenkins, que bloquea cualquier intento de desplegar vulnerabilidades en el entorno de Producción.
 
-A continuación, se muestra el diagrama interactivo de nuestra arquitectura y flujo de validación:
+A continuación, se muestra el diagrama interactivo de la arquitectura y flujo de validación:
 
 ```mermaid
 graph TD
