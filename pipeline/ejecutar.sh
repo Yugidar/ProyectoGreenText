@@ -22,7 +22,7 @@ fi
 
 echo "[3] Revisando dependencias de Python..."
 
-sudo docker run --rm -v $(pwd):/workspace -w /workspace python:3.10 bash -c "pip install -q pip-audit && pip-audit -r app/api/requirements.txt" > reportes/pip_audit.txt 2>&1
+docker run --rm -v $(pwd):/workspace -w /workspace python:3.10 bash -c "pip install -q pip-audit && pip-audit -r app/api/requirements.txt" > reportes/pip_audit.txt 2>&1
 
 if [ $? -ne 0 ]; then
     echo "  [X] UMBRAL SUPERADO: Dependencia vulnerable encontrada"
